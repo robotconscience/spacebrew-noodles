@@ -38,6 +38,8 @@ void setup() {
   spacebrewConnection.addPublish( "quadTwo", quadTwo ); 
   spacebrewConnection.addPublish( "quadThree", quadThree ); 
   spacebrewConnection.addPublish( "quadFour", quadFour ); 
+  spacebrewConnection.addPublish( "tspsX", 0 ); 
+  spacebrewConnection.addPublish( "tspsY", 0 ); 
 
   // connect!
   spacebrewConnection.connect("ws://"+server+":9000", name, description );
@@ -62,9 +64,16 @@ void draw() {
   // loop through people
   PVector last = new PVector(0,0);
   PVector highest = new PVector(0,0);
+  println( people.length ) ;
   for (int i=0; i<people.length; i++){
       // draw highest point
       highest.set(people[i].highest.x / 640.0, people[i].highest.y / 480.0,0);
+      
+      if ( i == 0 ){
+        spacebrewConnection.send("tspsX", (int) (highest.x * 1024) );
+        spacebrewConnection.send("tspsY", (int) (highest.y * 1024) );
+      }
+      
       highest.x *= width;
       highest.y *= height;
       
@@ -84,6 +93,7 @@ void draw() {
         }
         last.set(quads[j].x,quads[j].y,0);
       }
+      
   };
   
   // draw quads
